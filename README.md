@@ -1,4 +1,6 @@
 # hello-world
-The IT World's Introduction to Me
+Greetings from Ben Steward!
 
-Everyone knows that computers are dominating the workflow in 1st world countries, even workplaces throughout the world. Therefore, it makes sense that I would learn some code so I can retain my relevancy as a contributor to society's progress in the workplace. At bare minimum, I will have knowledge and skill that give me an edge in the competition, regardless of my occupation.
+I originally decided to jump into computer code in attempt to stay relevant in the workplace--a very general goal. It didn't take long to realize that I really love this stuff! Once I got comfortable enough with basic HTML/CSS, I started putting together little websites and landing pages for various events (anything I could, really), and now I'm starting to venture into larger projects using various JS frameworks and libraries. Feel free to browse through my work and send any feedback to ronyfan102@gmail.com.
+
+Coming soon: www.tehpsalmist.com
