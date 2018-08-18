@@ -4,6 +4,7 @@ const fs = require('fs')
 const url = require('url')
 const StringDecoder = require('string_decoder').StringDecoder
 const config = require('./config')
+const isJSON = require('./util/isJSON')
 
 const httpServer = http.createServer((req, res) => {
   serverLogic(req, res)
@@ -20,19 +21,6 @@ const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
 })
 
 httpsServer.listen(config.httpsPort, () => console.log(`${config.envName} app listening over https at ${config.httpsPort}`))
-
-const handlers = {
-  notFound: (data, cB) => {
-    cB(404)
-  },
-  ping: (data, cB) => {
-    cB(200, data)
-  }
-}
-
-const router = {
-  ping: handlers.ping
-}
 
 const serverLogic = (req, res) => {
   const parsedUrl = url.parse(req.url, true)
@@ -68,9 +56,11 @@ const serverLogic = (req, res) => {
 
     chosenHandler(data, (statusCode, payload) => {
       statusCode = typeof statusCode === 'number' ? statusCode : 200
-      payload = typeof payload === 'object' ? payload : {}
+      payload = isJSON(payload) ? JSON.parse(payload) : payload
 
-      const deliverablePayload = JSON.stringify(payload)
+      const deliverablePayload = statusCode === 200
+        ? JSON.stringify({ reply: 'Well, hi there!', youSaid: payload })
+        : JSON.stringify(payload)
 
       res.setHeader('Content-Type', 'application/json')
       res.writeHead(statusCode)
@@ -79,4 +69,17 @@ const serverLogic = (req, res) => {
       console.log(`${method} request received at ${trimmedPath} with queries of ${JSON.stringify(queryProps)} and headers of ${JSON.stringify(headers)} and a payload of ${JSON.stringify(buffer)}. Returned ${deliverablePayload} with status ${statusCode}`)
     })
   })
+}
+
+const handlers = {
+  notFound: (data, cB) => {
+    cB(404)
+  },
+  hello: (data, cB) => data.method === 'POST' && data.payload
+    ? cB(200, data.payload)
+    : cB(406, { error: 'No greeting, no reply.' })
+}
+
+const router = {
+  hello: handlers.hello
 }
